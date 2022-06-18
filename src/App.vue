@@ -26,27 +26,28 @@ export default {
     }
   },
   
-  created(){
-    this.tasks=[
-      {
-      userID:'1',
-      id:'1',
-      title:'delectus aut authem',
-      completed:false,
-      },
-        {
-      userID:'2',
-      id:'2',
-      title:'delectus aut authem',
-      completed:true,
-      },
-        {
-      userID:'3',
-      id:'3',
-      title:'delectus aut authem',
-      completed:true,
-      }
-    ]
+ async created(){
+    // this.tasks=[
+    //   {
+    //   userID:'1',
+    //   id:'1',
+    //   title:'delectus aut authem',
+    //   completed:false,
+    //   },
+    //     {
+    //   userID:'1',
+    //   id:'2',
+    //   title:'delectus aut authem',
+    //   completed:true,
+    //   },
+    //     {
+    //   userID:'1',
+    //   id:'3',
+    //   title:'delectus aut authem',
+    //   completed:true,
+    //   }
+    // ]
+    this.tasks= await this.fetchTask()
   },
   methods:{
     taskDeleted(id){
@@ -65,6 +66,11 @@ export default {
     },
     closeAdding(){
       this.showAddTask=!this.showAddTask
+    },
+    async fetchTask(){
+      const res=await fetch('https://jsonplaceholder.typicode.com/todos?_start=0&_limit=5&_delay=3000')
+      const data=res.json()
+      return data
     }
   },
  

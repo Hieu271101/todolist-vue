@@ -38,8 +38,8 @@ export default {
         return
       }
       const newTask = {
-        userID: Math.floor(Math.random * 1000),
-        id: this.userID,
+        userID: 1,
+        id: Math.floor(Math.random() * 1000),
         title: this.title,
         completed: this.completed,
       }
