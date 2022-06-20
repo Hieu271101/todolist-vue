@@ -1,14 +1,22 @@
 <template>
-  <form >
+  <form>
     <h1>Todo List</h1>
-    <Tasks @toggle-reminder="toggleChecked" @deleteTask='taskDeleted' :tasks="tasks"></Tasks>
-    <Button v-show="!showAddTask" @showTask='showTask'></Button>
-    <div v-show="showAddTask">
-        <AddTask @closeAdding='closeAdding' @add-Task='addTask'></AddTask>
+     <div class="loading" v-if="loading">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Loading_2.gif?20170503175831" alt="">
+     </div>
+    <div class="wrap" v-else >
+      <Tasks
+        @toggle-reminder="toggleChecked"
+        @deleteTask="taskDeleted"
+        :tasks="tasks"
+      ></Tasks>
+      <Button v-show="!showAddTask" @showTask="showTask"></Button>
+      <div v-show="showAddTask">
+        <AddTask @closeAdding="closeAdding" @add-Task="addTask"></AddTask>
+      </div>
     </div>
    
   </form>
-  
 </template>
 
 <script>
@@ -18,15 +26,15 @@ import Button from './components/Button.vue'
 import AddTask from './components/AddTask.vue'
 export default {
   name: 'App',
-  data(){
+  data() {
     return {
-      tasks:[],
+      tasks: [],
       showAddTask: false,
-     
+      loading: true,
     }
   },
-  
- async created(){
+
+  async created() {
     // this.tasks=[
     //   {
     //   userID:'1',
@@ -47,38 +55,51 @@ export default {
     //   completed:true,
     //   }
     // ]
-    this.tasks= await this.fetchTask()
-  },
-  methods:{
-    taskDeleted(id){
-      if(confirm('are u want to delete')){ this.tasks=this.tasks.filter((task)=>task.id!=id)}
-     
-    },
-    toggleChecked(id){
-     this.tasks= this.tasks.map((task)=>task.id===id?{...task, completed:!task.completed}:task)
-     
-    },
-    addTask(task){
-      this.tasks=[...this.tasks, task]
-    },
-    showTask(){
-      this.showAddTask=!this.showAddTask
-    },
-    closeAdding(){
-      this.showAddTask=!this.showAddTask
-    },
-    async fetchTask(){
-      const res=await fetch('https://jsonplaceholder.typicode.com/todos?_start=0&_limit=5&_delay=3000')
-      const data=res.json()
-      return data
-    }
-  },
+    // this.tasks = await this.fetchTask()
+      
+    this.tasks= await fetch('https://jsonplaceholder.typicode.com/todos?_start=0&_limit=5&_delay=3000')
+  .then(response => response.json());
+  // .then(data => console.log(data));
+  
  
+  this.loading=false
+  },
+  methods: {
+    taskDeleted(id) {
+      if (confirm('are u want to delete')) {
+        this.tasks = this.tasks.filter((task) => task.id != id)
+      }
+    },
+    toggleChecked(id) {
+      this.tasks = this.tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task,
+      )
+    },
+    addTask(task) {
+      this.tasks = [...this.tasks, task]
+    },
+    showTask() {
+      this.showAddTask = !this.showAddTask
+    },
+    closeAdding() {
+      this.showAddTask = !this.showAddTask
+    },
+    // async fetchTask() {
+    //   const res = await fetch(
+    //     'https://jsonplaceholder.typicode.com/todos?_start=0&_limit=5&_delay=3000',
+    //   )
+    //   const data = res.json()
+    //   this.loading=false
+    //   return data
+
+    // },
+  },
+
   components: {
     Tasks,
     AddTask,
-    Button
-  }
+    Button,
+  },
 }
 </script>
 
@@ -92,12 +113,12 @@ export default {
   margin-top: 60px;
 }
 
-form{
+form {
   border: 1px solid black;
   padding: 20px;
   width: 50%;
   height: 50%;
   margin: auto;
-  border-radius: 15px ;
+  border-radius: 15px;
 }
 </style>
